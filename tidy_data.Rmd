@@ -1,0 +1,21 @@
+---
+title: "tidy data"
+output: github_document
+---
+
+```{r message = FALSE}
+library(tidyverse)
+library(readxl)
+library(dplyr)
+```
+
+## Tidy Data
+```{r}
+#load data set
+smoke_df = read_csv("data/adult20.csv")
+
+clean_df = smoke_df %>% 
+  #clean variable names
+  janitor::clean_names()
+```
+
