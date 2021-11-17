@@ -33,3 +33,5 @@ clean_df = smoke_df %>%
   #clean variable names
   janitor::clean_names()
 ```
+
+#choosing my own variable
