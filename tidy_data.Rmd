@@ -13,7 +13,7 @@ library(dplyr)
 ```{r}
 #load data set
 smoke_df_2020 = read_csv("data/adult20.csv")
-
+smoke_df_2019 = read_csv("data/adult19.csv")
 clean_df = smoke_df_2020 %>% 
   #clean variable names
   janitor::clean_names()
@@ -30,7 +30,7 @@ cleaning_for_smoke_trend= function(dataset){
   select(cignow_a, smkcigst_a,smkage_a)%>% 
   rename(smoke_freq = cignow_a ,  smoking_status = smkcigst_a, smoking_age =smkage_a )}
 
-cleaning_for_smoke_trend(smoke_df_2020)
+smoke_trend_2020 = cleaning_for_smoke_trend(smoke_df_2020)
 ```
 
 
