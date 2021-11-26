@@ -12,10 +12,39 @@ library(dplyr)
 ## Tidy Data
 ```{r}
 #load data set
-smoke_df = read_csv("data/adult20.csv")
+smoke_df_2020 = read_csv("data/adult20.csv")
 
-clean_df = smoke_df %>% 
+clean_df = smoke_df_2020 %>% 
   #clean variable names
   janitor::clean_names()
+```
+
+#The smoking trend in the US over 5 years 
+let's clean the dataset for observing the smoking trends in these five years 
+lets select the relavant questions first and the following explain the details of the variables
+smoking_status: current smoking stastus.
+```{r}
+cleaning_for_smoke_trend= function(dataset){
+  dataset%>% 
+  janitor::clean_names()%>% 
+  select(cignow_a, smkcigst_a,smkage_a)%>% 
+  rename(smoke_freq = cignow_a ,  smoking_status = smkcigst_a, smoking_age =smkage_a )}
+
+cleaning_for_smoke_trend(smoke_df_2020)
+```
+
+
+the number of people smoking 
+```{r}
+ finding_smoking_trend = function(dataframe){
+   dataframe %>% 
+  select(smoking_status)%>%
+  mutate(smoking_status = recode(smoking_status,"1" = "current every day smoker", "2" ="current some day smoker",  "3"= "former smoker","4" = "never smoker"))%>% 
+  count(smoking_status)%>%
+  drop_na()}
+
+finding_smoking_trend(smoke_trend_2020)
+
+
 ```
 
