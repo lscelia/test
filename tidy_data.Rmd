@@ -12,8 +12,11 @@ library(dplyr)
 ## Tidy Data
 ```{r}
 #load data set
-smoke_df_2020 = read_csv("data/adult20.csv")
-smoke_df_2019 = read_csv("data/adult19.csv")
+smoke_df_2020 =read_csv("data/adult20.csv")
+smoke_df_2019 =read_csv("data/adult19.csv")
+smoke_df_2018 =read_csv("data/adult18.csv")
+smoke_df_2017 =read_csv("data/adult17.csv")
+smoke_df_2016 =read_csv("data/adult16.csv")
 clean_df = smoke_df_2020 %>% 
   #clean variable names
   janitor::clean_names()
@@ -23,15 +26,31 @@ clean_df = smoke_df_2020 %>%
 let's clean the dataset for observing the smoking trends in these five years 
 lets select the relavant questions first and the following explain the details of the variables
 smoking_status: current smoking stastus.
+
 ```{r}
+#cleaning data for 2019 and 2020 
 cleaning_for_smoke_trend= function(dataset){
   dataset%>% 
   janitor::clean_names()%>% 
-  select(cignow_a, smkcigst_a,smkage_a)%>% 
-  rename(smoke_freq = cignow_a ,  smoking_status = smkcigst_a, smoking_age =smkage_a )}
-
+  select(cignow_a, smkcigst_a)%>% 
+  rename(smoke_freq = cignow_a ,  smoking_status = smkcigst_a)}
+#select(cignow_a, smkcigst_a,smkage_a)
+#reminder for later: smoking_age =smkage_a 
 smoke_trend_2020 = cleaning_for_smoke_trend(smoke_df_2020)
+smoke_trend_2019  = cleaning_for_smoke_trend(smoke_df_2019)
+
+#cleaning data for 2018, 2017,2016 
+#rewrite the function since they have a different variable code
+cleaning_for_smoke_trend_2 = function(dataset){
+  dataset%>% 
+  janitor::clean_names()%>% 
+  select(smkstat2)%>% 
+  rename(smoking_status =smkstat2)}
+
+smoke_trend_2018 = cleaning_for_smoke_trend_2(smoke_df_2018)
+smoke_trend_2017 = cleaning_for_smoke_trend_2(smoke_df_2017)
 ```
+
 
 
 the number of people smoking 
@@ -43,8 +62,29 @@ the number of people smoking
   count(smoking_status)%>%
   drop_na()}
 
-finding_smoking_trend(smoke_trend_2020)
+#apply the function to know the summary of smoking status 
+#can i use a map function here?
+#have to add year and undergo pivot_longer
+#problem encountered: temporarily there is no data available in 2016
+smoke_trend_2020 = smoke_trend_2020 %>% 
+  finding_smoking_trend()%>%
+  mutate(year =  "2020")
 
+smoke_trend_2019 = smoke_trend_2019 %>% 
+  finding_smoking_trend()%>%
+  mutate(year =  "2019")
 
+ smoke_trend_2018= smoke_trend_2018 %>% 
+  finding_smoking_trend()%>%
+  mutate(year =  "2018")
+
+smoke_trend_2017 = smoke_trend_2017 %>% 
+  finding_smoking_trend()%>%
+  mutate(year =  "2017")
+
+smoke_trend_overall = bind_rows(smoke_trend_2017,smoke_trend_2018,smoke_trend_2019,smoke_trend_2020)%>%
+  rename(ppl_sum = n)
+
+#lets create a ggpplot
 ```
 
