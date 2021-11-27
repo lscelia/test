@@ -5,6 +5,7 @@ tidy data
 library(tidyverse)
 library(readxl)
 library(dplyr)
+library(ggplot2)
 ```
 
 ## Tidy Data
@@ -186,7 +187,14 @@ smoke_trend_2017 = smoke_trend_2017 %>%
 
 ``` r
 smoke_trend_overall = bind_rows(smoke_trend_2017,smoke_trend_2018,smoke_trend_2019,smoke_trend_2020)%>%
-  rename(ppl_sum = n)
+  rename(ppl_sum = n)%>%
+  relocate(year)
 
 #lets create a ggpplot
+# ***task： try it to make it interactive soon....
+smoke_trend_overall %>% 
+  ggplot(aes(x = year, y = ppl_sum, group = smoking_status)) + 
+  geom_point(aes(color = smoking_status))+ geom_line(aes(color = smoking_status))
 ```
+
+![](tidy_data_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
