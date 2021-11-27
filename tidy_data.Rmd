@@ -33,8 +33,8 @@ smoking_status: current smoking stastus.
 cleaning_for_smoke_trend= function(dataset){
   dataset%>% 
   janitor::clean_names()%>% 
-  select(cignow_a, smkcigst_a)%>% 
-  rename(smoke_freq = cignow_a ,  smoking_status = smkcigst_a)}
+  select(cignow_a, smkcigst_a,sex_a,hispallp_a, agep_a)%>% 
+  rename(smoke_freq = cignow_a ,  smoking_status = smkcigst_a, sex = sex_a,race =hispallp_a , age =  agep_a)}
 #select(cignow_a, smkcigst_a,smkage_a)
 #reminder for later: smoking_age =smkage_a 
 smoke_trend_2020 = cleaning_for_smoke_trend(smoke_df_2020)
@@ -45,8 +45,8 @@ smoke_trend_2019  = cleaning_for_smoke_trend(smoke_df_2019)
 cleaning_for_smoke_trend_2 = function(dataset){
   dataset%>% 
   janitor::clean_names()%>% 
-  select(smkstat2)%>% 
-  rename(smoking_status =smkstat2)}
+  select(smkstat2,sex, age_p, racerpi2)%>% 
+  rename(smoking_status =smkstat2, age = age_p, race= racerpi2)}
 
 smoke_trend_2018 = cleaning_for_smoke_trend_2(smoke_df_2018)
 smoke_trend_2017 = cleaning_for_smoke_trend_2(smoke_df_2017)
@@ -67,23 +67,23 @@ the number of people smoking
 #can i use a map function here?
 #have to add year and undergo pivot_longer
 #problem encountered: temporarily there is no data available in 2016
-smoke_trend_2020 = smoke_trend_2020 %>% 
+smoke_trend_20 = smoke_trend_2020 %>% 
   finding_smoking_trend()%>%
   mutate(year =  "2020")
 
-smoke_trend_2019 = smoke_trend_2019 %>% 
+smoke_trend_19 = smoke_trend_2019 %>% 
   finding_smoking_trend()%>%
   mutate(year =  "2019")
 
- smoke_trend_2018= smoke_trend_2018 %>% 
+ smoke_trend_18= smoke_trend_2018 %>% 
   finding_smoking_trend()%>%
   mutate(year =  "2018")
 
-smoke_trend_2017 = smoke_trend_2017 %>% 
+smoke_trend_17 = smoke_trend_2017 %>% 
   finding_smoking_trend()%>%
   mutate(year =  "2017")
 
-smoke_trend_overall = bind_rows(smoke_trend_2017,smoke_trend_2018,smoke_trend_2019,smoke_trend_2020)%>%
+smoke_trend_overall = bind_rows(smoke_trend_17,smoke_trend_18,smoke_trend_19,smoke_trend_20)%>%
   rename(ppl_sum = n)%>%
   relocate(year)
 
@@ -95,5 +95,70 @@ smoke_trend_overall %>%
   geom_point(aes(color = smoking_status))+ geom_line(aes(color = smoking_status))+ 
  ggtitle("Overall smoking trend of the U.S in recent 4 years according to NHIS ")+
   labs(y = "sum of people") 
+```
+After knowing the overall trend... let's observe the distribution of smoking. 
+In order to know their distribution, we have to obtain the information of their age, race and sex. 
+We can group by these categories and making a distribution plot.
+```{r}
+#function creating the same table to find the distribution
+#first do some data cleaning
+ finding_smoking_dis =  function(dataframe){
+   dataframe %>% 
+  select(smoking_status, race, age, sex)%>%
+  filter(sex== "1" | sex== "2")%>%
+  subset(race != "97"|race != "98"|race != "99") %>% 
+  mutate(sex = recode(sex,"1" = "male", "2" ="female"), 
+         race =recode(race, "1" = "hispanic ", "2" ="white" , "3"="black/african american", "4"= "asian ", "5" = "aian", "6" = "aian and any other group", "7" ="other races"),
+         #since 1,2 represents current daily/occasional smokers whereas 3,4 is former smoker and never smoke respectively; we define 1,2 as smoker whereas 3,4 as non-smoker
+         smoking_status = 
+           case_when(smoking_status == "1"|smoking_status == "2"~ "smoker",
+                     smoking_status == "3"|smoking_status == "4"~ "non-smoker"))}
+
+df1= finding_smoking_dis(smoke_trend_2020)%>%
+  mutate(year =  "2020")
+df2 = finding_smoking_dis(smoke_trend_2019)%>%
+  mutate(year =  "2019")
+df3= finding_smoking_dis(smoke_trend_2018)%>%
+  mutate(year =  "2018")
+df4 = finding_smoking_dis(smoke_trend_2017)%>%
+  mutate(year =  "2017")
+
+
+
+#***making interactive plot with option clicking on different years 
+#year 2020 smoking distribution
+df1%>%
+filter(smoking_status =="smoker")%>%
+  count(race,age)%>%
+  ggplot(aes(x =race, y =age)) + 
+  geom_violin(aes(fill = race), alpha = .5) + 
+  stat_summary(fun = "median", color = "blue")+
+  labs(title=" Distribution of smoking among agegroup and race in year 2020")+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+ 
+df2%>%
+filter(smoking_status =="smoker")%>%
+  count(race,age)%>%
+  ggplot(aes(x =race, y =age)) + 
+  geom_violin(aes(fill = race), alpha = .5) + 
+  stat_summary(fun = "median", color = "blue")+
+  labs(title=" Distribution of smoking among agegroup and race in year 2019") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+df3%>%
+filter(smoking_status =="smoker")%>%
+  count(race,age)%>%
+  ggplot(aes(x =race, y =age)) + 
+  geom_violin(aes(fill = race), alpha = .5) + 
+  stat_summary(fun = "median", color = "blue")+
+  labs(title=" Distribution of smoking among agegroup and race in year 2018") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+
+df4%>%
+filter(smoking_status =="smoker")%>%
+  count(race,age)%>%
+  ggplot(aes(x =race, y =age)) + 
+  geom_violin(aes(fill = race), alpha = .5) + 
+  stat_summary(fun = "median", color = "blue")+
+  labs(title=" Distribution of smoking among agegroup and race in year 2017") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
 
