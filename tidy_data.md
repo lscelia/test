@@ -192,9 +192,12 @@ smoke_trend_overall = bind_rows(smoke_trend_2017,smoke_trend_2018,smoke_trend_20
 
 #lets create a ggpplot
 # ***task： try it to make it interactive soon....
+#Problem: Should I use rate instead....???
 smoke_trend_overall %>% 
   ggplot(aes(x = year, y = ppl_sum, group = smoking_status)) + 
-  geom_point(aes(color = smoking_status))+ geom_line(aes(color = smoking_status))
+  geom_point(aes(color = smoking_status))+ geom_line(aes(color = smoking_status))+ 
+ ggtitle("Overall smoking trend of the U.S in recent 4 years according to NHIS ")+
+  labs(y = "sum of people") 
 ```
 
 ![](tidy_data_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
