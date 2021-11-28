@@ -236,13 +236,15 @@ df4 = finding_smoking_dis(smoke_trend_2017)%>%
 #year 2020 smoking distribution
 df1%>%
 filter(smoking_status =="smoker")%>%
-  count(race,age)%>%
-  ggplot(aes(x =race, y =age)) + 
+  count(race,age,sex)%>%
+  ggplot(aes(x =race, y =age,)) + 
   geom_violin(aes(fill = race), alpha = .5) + 
-  stat_summary(fun = "median", color = "blue")+
+  stat_summary(fun = "median", color = "blue")+facet_grid(.~sex)+ 
   labs(title=" Distribution of smoking among agegroup and race in year 2020")+ 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
+
+    ## Warning: Removed 7 rows containing missing values (geom_segment).
 
     ## Warning: Removed 7 rows containing missing values (geom_segment).
 
@@ -251,12 +253,14 @@ filter(smoking_status =="smoker")%>%
 ``` r
 df2%>%
 filter(smoking_status =="smoker")%>%
-  count(race,age)%>%
+  count(race,age,sex)%>%
   ggplot(aes(x =race, y =age)) + 
   geom_violin(aes(fill = race), alpha = .5) + 
-  stat_summary(fun = "median", color = "blue")+
+  stat_summary(fun = "median", color = "blue")+ facet_grid(.~sex)+ 
   labs(title=" Distribution of smoking among agegroup and race in year 2019") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
+
+    ## Warning: Removed 7 rows containing missing values (geom_segment).
 
     ## Warning: Removed 7 rows containing missing values (geom_segment).
 
@@ -265,12 +269,15 @@ filter(smoking_status =="smoker")%>%
 ``` r
 df3%>%
 filter(smoking_status =="smoker")%>%
-  count(race,age)%>%
+  count(race,age,sex)%>%
   ggplot(aes(x =race, y =age)) + 
   geom_violin(aes(fill = race), alpha = .5) + 
   stat_summary(fun = "median", color = "blue")+
+   facet_grid(.~sex)+ 
   labs(title=" Distribution of smoking among agegroup and race in year 2018") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
+
+    ## Warning: Removed 6 rows containing missing values (geom_segment).
 
     ## Warning: Removed 6 rows containing missing values (geom_segment).
 
@@ -278,13 +285,15 @@ filter(smoking_status =="smoker")%>%
 
 ``` r
 df4%>%
-filter(smoking_status =="smoker")%>%
-  count(race,age)%>%
+  filter(smoking_status =="smoker")%>%
+  count(race,age,sex)%>%
   ggplot(aes(x =race, y =age)) + 
   geom_violin(aes(fill = race), alpha = .5) + 
   stat_summary(fun = "median", color = "blue")+
-  labs(title=" Distribution of smoking among agegroup and race in year 2017") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  facet_grid(.~sex)+ labs(title=" Distribution of smoking among agegroup and race in year 2017") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
+
+    ## Warning: Removed 6 rows containing missing values (geom_segment).
 
     ## Warning: Removed 6 rows containing missing values (geom_segment).
 
