@@ -97,7 +97,7 @@ smoke_trend_overall_plot = smoke_trend_overall %>%
  ggtitle("Overall smoking trend of the U.S in recent 4 years according to NHIS ")+
   labs(y = "sum of people")
 
-ggplotly(smoke_trend_overall_plot)
+#ggplotly(smoke_trend_overall_plot)
 ```
 After knowing the overall trend... let's observe the distribution of smoking. 
 In order to know their distribution, we have to obtain the information of their age, race and sex. 
@@ -165,9 +165,9 @@ plot_df4 = df4%>%
   stat_summary(fun = "median", color = "blue")+
   facet_grid(.~sex)+ labs(title=" Distribution of smoking among agegroup and race in year 2017") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
-ggplotly(plot_df4)
-ggplotly(plot_df3)
-ggplotly(plot_df2)
-ggplotly(plot_df1)
+#ggplotly(plot_df4)
+#ggplotly(plot_df3)
+#ggplotly(plot_df2)
+#ggplotly(plot_df1)
 ```
 

@@ -6,6 +6,7 @@ library(tidyverse)
 library(readxl)
 library(dplyr)
 library(ggplot2)
+library(plotly)
 ```
 
 ## Tidy Data
@@ -193,18 +194,19 @@ smoke_trend_overall = bind_rows(smoke_trend_17,smoke_trend_18,smoke_trend_19,smo
 #lets create a ggpplot
 # ***task： try it to make it interactive soon....
 #Problem: Should I use rate instead....???
-smoke_trend_overall %>% 
+smoke_trend_overall_plot = smoke_trend_overall %>% 
   ggplot(aes(x = year, y = ppl_sum, group = smoking_status)) + 
   geom_point(aes(color = smoking_status))+ geom_line(aes(color = smoking_status))+ 
  ggtitle("Overall smoking trend of the U.S in recent 4 years according to NHIS ")+
-  labs(y = "sum of people") 
+  labs(y = "sum of people")
+
+#ggplotly(smoke_trend_overall_plot)
 ```
 
-![](tidy_data_files/figure-gfm/unnamed-chunk-4-1.png)<!-- --> After
-knowing the overall trend… let’s observe the distribution of smoking. In
-order to know their distribution, we have to obtain the information of
-their age, race and sex. We can group by these categories and making a
-distribution plot.
+After knowing the overall trend… let’s observe the distribution of
+smoking. In order to know their distribution, we have to obtain the
+information of their age, race and sex. We can group by these categories
+and making a distribution plot.
 
 ``` r
 #function creating the same table to find the distribution
@@ -234,7 +236,7 @@ df4 = finding_smoking_dis(smoke_trend_2017)%>%
 
 #***making interactive plot with option clicking on different years 
 #year 2020 smoking distribution
-df1%>%
+plot_df1 = df1%>%
 filter(smoking_status =="smoker")%>%
   count(race,age,sex)%>%
   ggplot(aes(x =race, y =age,)) + 
@@ -242,32 +244,16 @@ filter(smoking_status =="smoker")%>%
   stat_summary(fun = "median", color = "blue")+facet_grid(.~sex)+ 
   labs(title=" Distribution of smoking among agegroup and race in year 2020")+ 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-```
-
-    ## Warning: Removed 7 rows containing missing values (geom_segment).
-
-    ## Warning: Removed 7 rows containing missing values (geom_segment).
-
-![](tidy_data_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
-
-``` r
-df2%>%
+ 
+plot_df2 = df2%>%
 filter(smoking_status =="smoker")%>%
   count(race,age,sex)%>%
   ggplot(aes(x =race, y =age)) + 
   geom_violin(aes(fill = race), alpha = .5) + 
   stat_summary(fun = "median", color = "blue")+ facet_grid(.~sex)+ 
   labs(title=" Distribution of smoking among agegroup and race in year 2019") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-```
 
-    ## Warning: Removed 7 rows containing missing values (geom_segment).
-
-    ## Warning: Removed 7 rows containing missing values (geom_segment).
-
-![](tidy_data_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
-
-``` r
-df3%>%
+plot_df3=df3%>%
 filter(smoking_status =="smoker")%>%
   count(race,age,sex)%>%
   ggplot(aes(x =race, y =age)) + 
@@ -275,26 +261,18 @@ filter(smoking_status =="smoker")%>%
   stat_summary(fun = "median", color = "blue")+
    facet_grid(.~sex)+ 
   labs(title=" Distribution of smoking among agegroup and race in year 2018") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-```
 
-    ## Warning: Removed 6 rows containing missing values (geom_segment).
 
-    ## Warning: Removed 6 rows containing missing values (geom_segment).
-
-![](tidy_data_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
-
-``` r
-df4%>%
+plot_df4 = df4%>%
   filter(smoking_status =="smoker")%>%
   count(race,age,sex)%>%
   ggplot(aes(x =race, y =age)) + 
   geom_violin(aes(fill = race), alpha = .5) + 
   stat_summary(fun = "median", color = "blue")+
   facet_grid(.~sex)+ labs(title=" Distribution of smoking among agegroup and race in year 2017") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+#ggplotly(plot_df4)
+#ggplotly(plot_df3)
+#ggplotly(plot_df2)
+#ggplotly(plot_df1)
 ```
-
-    ## Warning: Removed 6 rows containing missing values (geom_segment).
-
-    ## Warning: Removed 6 rows containing missing values (geom_segment).
-
-![](tidy_data_files/figure-gfm/unnamed-chunk-5-4.png)<!-- -->
